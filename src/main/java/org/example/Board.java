@@ -1,7 +1,7 @@
 package org.example;
 
 public class Board {
-    private char[][] cells;
+    private final char[][] cells;
     private final int SIZE = 3;
 
     public Board() {

@@ -4,10 +4,10 @@ package org.example;
 import java.util.Scanner;
 
 public class TicTacToe {
-    private Player player1;
-    private Player player2;
+    private final Player player1;
+    private final Player player2;
     private Player currentPlayer;
-    private Board board;
+    private final Board board;
 
     public TicTacToe() {
         // Spieler und Brett initialisieren, Startspieler festlegen
@@ -21,10 +21,10 @@ public class TicTacToe {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Starting a new game of Tic-Tac-Toe!");
         board.print();
-        // Spielschleife
+        // Spielschleife, win condition muss noch eingefügt werden
         while (true) {
             // Spieler auffordern, einen Zug einzugeben
-            System.out.println("Player " + currentPlayer.getMarker() + ", it's your turn.");
+            System.out.println("Player " + currentPlayer.getMarker() + ", it's your turn!");
             int x, y;
             // Eingabe wiederholen, bis ein gültiger Zug erfolgt
             while (true) {
@@ -40,13 +40,11 @@ public class TicTacToe {
                     break;
                 }
             }
-            // Zug ausführen und Brett anzeigen
+            // Zug ausführen, Brett anzeigen und Spieler wechseln
             board.place(x, y, currentPlayer.getMarker());
-
-
-            }
-
-
+            board.print();
+            switchCurrentPlayer();
+        }
     }
 
     private void switchCurrentPlayer() {
@@ -55,4 +53,5 @@ public class TicTacToe {
         } else {
             currentPlayer = player1;
         }
-    }}
+    }
+}
