@@ -1,0 +1,62 @@
+name: CI & CD
+
+on:
+  # 1. Tests auf jedem Branch-Push (inkl. Feature-Branches)
+  push:
+    branches: [ '**' ]
+  # Tests auch bei Pull Requests gegen main
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Maven & Run Tests
+        run: mvn clean verify --batch-mode
+
+      - name: Sanitize branch name for artifact
+        run: |
+          # ersetzt alle "/" durch "-"
+          echo "SANITIZED_REF=$(echo ${GITHUB_REF_NAME} | sed 's|/|-|g')" >> $GITHUB_ENV
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4    # <-- updated to v4
+        with:
+          name: test-reports-${{ env.SANITIZED_REF }}
+          path: target/surefire-reports/
+
+  deploy:
+    name: Deploy JAR on main
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build JAR
+        run: mvn clean package --batch-mode
+
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4    # <-- updated to v4
+        with:
+          name: tictactoe-jar
+          path: target/*.jar
