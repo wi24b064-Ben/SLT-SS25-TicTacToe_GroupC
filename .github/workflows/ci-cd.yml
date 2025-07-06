@@ -1,10 +1,10 @@
 name: CI & CD
 
 on:
-  # 1. Tests auf jedem Branch-Push
+  # 1. Tests auf jedem Branch-Push (inkl. Feature-Branches)
   push:
     branches: [ '**' ]
-  # und auch bei Pull Requests gegen main
+  # Tests auch bei Pull Requests gegen main
   pull_request:
     branches: [ main ]
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Upload Test Reports
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4    # <-- updated to v4
         with:
           name: test-reports-${{ github.ref_name }}
           path: target/surefire-reports/
@@ -51,7 +51,7 @@ jobs:
         run: mvn clean package --batch-mode
 
       - name: Upload JAR Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4    # <-- updated to v4
         with:
           name: tictactoe-jar
           path: target/*.jar
