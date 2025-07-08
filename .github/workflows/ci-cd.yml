@@ -1,5 +1,6 @@
 name: CI & CD
-
+permissions:
+  contents: write
 on:
   # 1. Tests auf jedem Branch-Push (inkl. Feature-Branches)
   push:
@@ -40,7 +41,7 @@ jobs:
   deploy:
     name: Deploy JAR on main
     needs: build-and-test
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -80,5 +81,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: target/SLT-SS25-TicTacToe_GroupC-1.0-SNAPSHOT.jar
-          asset_name: TicTacToe-v1.0.${{ github.run_number }}.jar
+          asset_name: TicTacToe-.${{ github.run_number }}.jar
           asset_content_type: application/java-archive
