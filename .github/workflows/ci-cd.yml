@@ -2,10 +2,9 @@ name: CI & CD
 permissions:
   contents: write
 on:
-  # 1. Tests auf jedem Branch-Push (inkl. Feature-Branches)
+  workflow_dispatch:
   push:
     branches: [ '**' ]
-  # Tests auch bei Pull Requests gegen main
   pull_request:
     branches: [ main ]
 
